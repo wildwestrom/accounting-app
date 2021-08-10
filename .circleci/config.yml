@@ -4,6 +4,9 @@
 #
 version: 2.1
 
+orbs:
+  heroku: circleci/heroku@1.2.6
+
 jobs:
   build:
     docker:
@@ -52,9 +55,23 @@ jobs:
 
       - store_artifacts:
           path: ~/repo/public
+  deploy:
+    executor: heroku/default
+    working_directory: ~/
+    steps:
+      - attach_workspace:
+          at: ~/
+      - checkout
+      - heroku/install
+      - run:
+          command: >
+            echo "The command above installs Heroku, the command below deploys.
+            What you do inbetween is up to you!"
+      - heroku/deploy-via-git
+
 
 workflows:
   build-deploy:
     jobs:
       - build
-      # - deploy
+      - deploy

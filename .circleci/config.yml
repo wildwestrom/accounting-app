@@ -8,7 +8,7 @@ orbs:
   heroku: circleci/heroku@1.2.6
 
 jobs:
-  build:
+  test:
     docker:
       - image: circleci/clojure:tools-deps-node
 
@@ -34,13 +34,8 @@ jobs:
             - v1-dependencies-node-{{ checksum "yarn.lock" }}
             - v1-dependencies-node-
 
-      # build!
+      # build
       - run: yarn release
-
-      - persist_to_workspace:
-         root: ~/
-         paths:
-          - repo/public
 
       - save_cache:
           paths:
@@ -57,25 +52,20 @@ jobs:
           path: ~/repo/public
   deploy:
     executor: heroku/default
-    working_directory: ~/
+    working_directory: ~/repo
     steps:
-      - attach_workspace:
-          at: ~/
+      - checkout
       - heroku/install
-      - run:
-          command: >
-            echo "The command above installs Heroku, the command below deploys.
-            What you do inbetween is up to you!"
       - heroku/deploy-via-git
 
 
 workflows:
-  build-deploy:
+  test-deploy:
     jobs:
-      - build
+      - test:
       - deploy:
           requires:
-            - build
+            - test
           # filters:
           #   branches:
           #     only: master

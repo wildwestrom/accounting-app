@@ -3,7 +3,7 @@
     "scripts": {
         "deps": "yarn install",
         "build": "shadow-cljs release app",
-        "release": "run-s deps build",
+        "release": "yarn deps && yarn build",
         "watch": "shadow-cljs watch app"
     },
     "devDependencies": {

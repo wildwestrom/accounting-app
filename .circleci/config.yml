@@ -61,7 +61,6 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
-      - checkout
       - heroku/install
       - run:
           command: >

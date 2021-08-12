@@ -19,6 +19,7 @@
         "@material-ui/styles": "^4.11.4",
         "@material-ui/system": "^4.12.1",
         "@material-ui/utils": "^4.11.2",
+        "highlight.js": "11.1.0",
         "react": "^17.0.1",
         "react-dom": "^17.0.1"
     }

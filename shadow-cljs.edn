@@ -3,21 +3,29 @@
  :nrepl
  {:port  3333
   :nrepl {:middleware [refactor-nrepl.middleware/wrap-refactor]}}
- :builds
- {:app {:target     :browser
-        :output-dir "public/js/compiled"
-        :asset-path "/js/compiled"
-        :modules    {:main {:init-fn app.frontend.core/init}}
-        :devtools   {:before-load app.frontend.core/stop
-                   :after-load    app.frontend.core/start
-                   :http-root     "public"
-                   :http-port     3000
-                   :preloads      [devtools.preload
-                                 day8.re-frame-10x.preload]}
-        :dev        {:compiler-options {:output-feature-set :es-next
-                                 :infer-externs             :auto
-                                 :optimizations             :none
-                                 :closure-defines           {re-frame.trace.trace-enabled? true
-                                                      day8.re-frame.tracing.trace-enabled? true}}}
-        :release    {:build-options {:ns-aliases {day8.re-frame.tracing day8.re-frame.tracing-stubs}}}
-        :js-options {:anon-fn-naming-policy :unmapped}}}}
+ :builds {:app  {:target     :browser
+                 :output-dir "public/js/compiled"
+                 :asset-path "/js/compiled"
+                 :modules    {:main {:init-fn app.frontend.core/init}}
+                 :devtools   {:before-load app.frontend.core/stop
+                              :after-load  app.frontend.core/start
+                              :http-root   "public"
+                              :http-port   3000
+                              :preloads    [devtools.preload
+                                           day8.re-frame-10x.preload]}
+                 :dev        {:compiler-options
+                              {:output-feature-set :es-next
+                               :infer-externs      :auto
+                               :optimizations      :none
+                               :closure-defines
+                               {re-frame.trace.trace-enabled?        true
+                                day8.re-frame.tracing.trace-enabled? true}}}
+                 :release    {:build-options
+                              {:ns-aliases
+                               {day8.re-frame.tracing day8.re-frame.tracing-stubs}}}
+                 :js-options {:anon-fn-naming-policy :unmapped}}
+          :test {:target    :node-test
+                 :test-dir  "test-out/"
+                 :output-to "test-out/node-tests.js"
+                 :ns-regexp "-test$"
+                 :autorun   true}}}

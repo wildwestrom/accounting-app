@@ -4,6 +4,7 @@
         "deps": "yarn install",
         "build": "shadow-cljs release app",
         "release": "yarn deps && yarn build",
+        "watch:test": "shadow-cljs watch test",
         "watch": "shadow-cljs watch app"
     },
     "devDependencies": {

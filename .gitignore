@@ -20,3 +20,4 @@ yarn-error.log
 /.idea/
 *.iml
 /.clj-kondo/.cache/
+/test-out/

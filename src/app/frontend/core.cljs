@@ -4,10 +4,6 @@
             [app.frontend.events :as events]
             [app.frontend.views :as views]))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Render
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defn mount-root
   [component]
   (r.dom/render component (.getElementById js/document "app")))
@@ -20,7 +16,7 @@
 (defn ^:export init
   []
   (.log js/console "init")
-  (rf/dispatch-sync [::events/initialize-db])
+  (rf/dispatch-sync [::events/initialise-db])
   (start))
 
 (defn ^:dev/before-load stop

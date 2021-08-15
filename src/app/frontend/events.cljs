@@ -1,17 +1,14 @@
 (ns app.frontend.events
   (:require [app.frontend.db :as db]
-            [app.frontend.subs :as subs]
-            [re-frame.core :as rf]
+            [re-frame.core :as re-frame :refer [reg-event-db]]
             [day8.re-frame.tracing :refer-macros [fn-traced]]))
 
-(rf/reg-event-db
+(reg-event-db
  ::initialise-db
  (fn-traced [_ _]
             db/default-db))
 
-#_(map #(/ % (rand-int 99)) (repeat 69 (+ 22 465)))
-
-(rf/reg-event-db
+(reg-event-db
  ::add-transaction
- (fn [db tx]
+ (fn [db [_ tx]]
    (conj db tx)))

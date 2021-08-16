@@ -37,7 +37,7 @@
                        :step        1
                        :placeholder "Amount..."
                        :value       @amount
-                       :on-change   #(reset! amount (.. % -target -value))
+                       :on-change   #(reset! amount (int (.. % -target -value)))
                        :label       "Required"
                        :InputProps  {:end-adornment
                                      (r/as-element
@@ -46,10 +46,7 @@
       [mui/text-field {:type      "datetime-local"
                        :required  true
                        :value     @datetime
-                       :on-change #(reset! datetime (.. % -target -value))
-                       :InputProps {:end-adornment
-                                    (r/as-element
-                                     [mui/input-adornment "UTC"])}}]]
+                       :on-change #(reset! datetime (.. % -target -value))}]]
 
      [mui/table-cell
       [mui/button {:variant "outlined"

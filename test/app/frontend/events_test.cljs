@@ -6,15 +6,17 @@
              :refer [subscribe dispatch-sync dispatch]]
             [day8.re-frame.test :as rf-test]
             [cljs.test :refer-macros [deftest testing is]]))
-
 ;; (dispatch [::sut/add-transaction ["some" "other" "data"]])
 
 (deftest handlers
-  (rf-test/run-test-sync
-   (let [table (subscribe [::subs/table])]
-     (dispatch [::sut/initialise-db])
-     (is (= @table
-            (:all-data db/default-db)))
-     (dispatch [::sut/add-transaction ["some" "other" "data"]])
-     (is (= @table
-            (conj (:all-data db/default-db) ["some" "other" "data"]))))))
+  (let [table (subscribe [::subs/table])
+        tx {:payable-to "Some company" :amount "13546" :date 1629072000000}]
+    (rf-test/run-test-sync
+     (testing "Initial db works:"
+       (dispatch [::sut/initialise-db])
+       (is (= @table
+              (:all-data db/default-db))))
+     (testing "Adding to db works:"
+       (dispatch [::sut/add-transaction tx])
+       (is (= @table
+              (conj (:all-data db/default-db) tx)))))))

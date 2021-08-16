@@ -10,5 +10,5 @@
 
 (reg-event-db
  ::add-transaction
- (fn [db [_ tx]]
-   (conj db tx)))
+ (fn-traced [db [_ tx]]
+   (update db :all-data #(conj % tx))))

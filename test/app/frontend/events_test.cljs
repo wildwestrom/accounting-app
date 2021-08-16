@@ -5,13 +5,16 @@
             [re-frame.core :as re-frame
              :refer [subscribe dispatch-sync dispatch]]
             [day8.re-frame.test :as rf-test]
-            [cljs.test :refer-macros [deftest testing is]]
-            [re-frame.core :as rf]))
+            [cljs.test :refer-macros [deftest testing is]]))
+
+;; (dispatch [::sut/add-transaction ["some" "other" "data"]])
 
 (deftest handlers
   (rf-test/run-test-sync
    (let [table (subscribe [::subs/table])]
      (dispatch [::sut/initialise-db])
+     (is (= @table
+            (:all-data db/default-db)))
      (dispatch [::sut/add-transaction ["some" "other" "data"]])
      (is (= @table
             (conj (:all-data db/default-db) ["some" "other" "data"]))))))

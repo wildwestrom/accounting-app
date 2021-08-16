@@ -3,7 +3,7 @@
             [reagent-material-ui.components :as mui]
             [reagent.core :as r]
             [app.frontend.subs :as subs]
-            [clojure.string :as str]
+            [app.frontend.events :as events]
             [goog.string :as gstring]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -31,33 +31,46 @@
          (leading-zero (.getMinutes inst)))))
 
 (defn input-fields []
-  [mui/table-row
-   [mui/table-cell
-    [mui/text-field {:type         "string"
-                     :required     true
-                     :placeholder  "Payable to..."
-                     :defaultValue "Company Name"
-                     :label        "Required"}]]
-   [mui/table-cell
-    [mui/text-field {:type         "number"
-                     :required     true
-                     :step         1
-                     :placeholder  "Amount..."
-                     :defaultValue "0"
-                     :label        "Required"
-                     :InputProps   {:end-adornment (r/as-element [mui/input-adornment {:position "end"} "₴"])}}]]
-   [mui/table-cell
-    [mui/text-field {:type         "date"
-                     :required     true
-                     :defaultValue (current-date)
-                     :onChange     #(println (.. % -target -value))}]
-    [mui/text-field {:type         "time"
-                     :defaultValue (current-time)
-                     :onChange     #(println (.. % -target -value))}]]
-   [mui/table-cell
-    [mui/button {:variant "outlined"
-                 :type    "submit"}
-     "Submit"]]])
+  (r/with-let [payable-to (r/atom "Company Name")
+               amount     (r/atom "0")
+               date       (r/atom (current-date))
+               time       (r/atom (current-time))]
+    [mui/table-row
+     [mui/table-cell
+      [mui/text-field {:type        "string"
+                       :required    true
+                       :placeholder "Payable to..."
+                       :value       @payable-to
+                       :on-change   #(reset! payable-to (.. % -target -value))
+                       :label       "Required"}]]
+     [mui/table-cell
+      [mui/text-field {:type        "number"
+                       :required    true
+                       :step        1
+                       :placeholder "Amount..."
+                       :value       @amount
+                       :on-change   #(reset! amount (.. % -target -value))
+                       :label       "Required"
+                       :InputProps  {:end-adornment
+                                     (r/as-element
+                                      [mui/input-adornment {:position "end"}
+                                       "₴"])}}]]
+     [mui/table-cell
+      [mui/text-field {:type      "date"
+                       :required  true
+                       :value     @date
+                       :on-change #(reset! date (.. % -target -value))}]
+      [mui/text-field {:type      "time"
+                       :value     @time
+                       :on-change #(reset! time (.. % -target -value))}]]
+     [mui/table-cell
+      [mui/button {:variant "outlined"
+                   :type    "submit"
+                   :on-click #(rf/dispatch [::events/add-transaction
+                                            {:payable-to @payable-to
+                                             :amount     @amount
+                                             :date       (js/Date.parse (str @date " " @time))}])}
+       "Submit"]]]))
 
 (defn table-body
   []
@@ -73,7 +86,7 @@
                        :justifyContent "space-between"}
              [:span amount]
              [:span "₴"]]]
-           [mui/table-cell date]])])]))
+           [mui/table-cell (.toLocaleString (js/Date. date))]])])]))
 
 (defn table
   []

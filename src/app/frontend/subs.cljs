@@ -4,5 +4,5 @@
 
 (reg-sub
  ::table
- (fn-traced [db]
-   (:all-data db)))
+ (fn-traced [db _]
+   (sort-by :date (:all-data db))))

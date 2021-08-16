@@ -96,5 +96,8 @@
    [mui/container
     [:h1 "Accounting App Demo"]
     [mui/paper {:elevation 3}
-     [mui/card [mui/card-header {:title "Accounts Payable:"}]]
+     [mui/container
+      [mui/card-header {:title "Accounts Payable:"}]
+      [:h3 (str "Current spending for this month: "
+                @(rf/subscribe [::subs/current-month-total]) "₴")]]
      [table]]]])

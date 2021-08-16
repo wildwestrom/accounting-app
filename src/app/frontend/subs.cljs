@@ -5,4 +5,23 @@
 (reg-sub
  ::table
  (fn-traced [db _]
-   (sort-by :date (:all-data db))))
+            (sort-by :date (:all-data db))))
+
+(reg-sub
+ ::current-month-total
+ (fn-traced [db _]
+            (let [beginning-of-month (.valueOf
+                                      (let [date (js/Date.)]
+                                        (js/Date. (.getFullYear date)
+                                                  (.getMonth date)
+                                                  1)))
+                  end-of-month (.valueOf
+                                (let [date (js/Date.)]
+                                  (js/Date. (.getFullYear date)
+                                            (+ 1 (.getMonth date))
+                                            0)))]
+              (apply + (map #(int (:amount %))
+                            (filter #(<= beginning-of-month
+                                         (:date %)
+                                         end-of-month)
+                                    (:all-data db)))))))

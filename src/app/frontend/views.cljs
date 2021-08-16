@@ -43,20 +43,22 @@
                                      (r/as-element
                                       [mui/input-adornment "₴"])}}]]
      [mui/table-cell
-      [mui/text-field {:type      "datetime-local"
-                       :required  true
-                       :label       "Required"
-                       :value     @datetime
-                       :on-change #(reset! datetime (.. % -target -value))}]]
-
-     [mui/table-cell
-      [mui/button {:variant "outlined"
-                   :type    "submit"
-                   :on-click #(rf/dispatch [::events/add-transaction
-                                            {:payable-to @payable-to
-                                             :amount     @amount
-                                             :date       (.valueOf (js/Date. @datetime))}])}
-       "Submit"]]]))
+      [mui/grid {:container true
+                 :justifyContent "space-between"
+                 :style #js {:gridTemplateColumns "repeat (2, 1fr)"}}
+       [mui/text-field {:type      "datetime-local"
+                        :required  true
+                        :label       "Required"
+                        :value     @datetime
+                        :on-change #(reset! datetime (.. % -target -value))}]
+       [mui/button
+        {:variant "outlined"
+         :type    "submit"
+         :on-click #(rf/dispatch
+                     [::events/add-transaction
+                      {:payable-to @payable-to
+                       :amount     @amount
+                       :date       (.valueOf (js/Date. @datetime))}])} "Submit"]]]]))
 
 (defn table-body
   []
@@ -96,6 +98,7 @@
     [mui/paper {:elevation 3}
      [mui/container
       [mui/card-header {:title "Accounts Payable:"}]
-      [:h3 (str "Current spending for this month: "
-                @(rf/subscribe [::subs/current-month-total]) "₴")]]
+      [mui/box
+       [:span "Current spending for this month: "]
+       [:span @(rf/subscribe [::subs/current-month-total]) "₴"]]]
      [table]]]])

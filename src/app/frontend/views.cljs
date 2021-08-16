@@ -4,7 +4,8 @@
             [reagent.core :as r]
             [app.frontend.subs :as subs]
             [app.frontend.events :as events]
-            [goog.string :as gstring]))
+            [goog.string :as gstring]
+            [clojure.string :as string]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Components
@@ -14,27 +15,14 @@
   [num]
   (gstring/format "%02d" num))
 
-(defn current-date
+(defn current-datetime
   []
-  (let [inst (js/Date.)]
-    (str (.getFullYear inst)
-         "-"
-         (leading-zero (.getMonth inst))
-         "-"
-         (leading-zero (.getDate inst)))))
-
-(defn current-time
-  []
-  (let [inst (js/Date.)]
-    (str (leading-zero (.getHours inst))
-         ":"
-         (leading-zero (.getMinutes inst)))))
+  (string/join ":" (drop-last (string/split (.toISOString (js/Date.)) ":"))))
 
 (defn input-fields []
   (r/with-let [payable-to (r/atom "Company Name")
                amount     (r/atom "0")
-               date       (r/atom (current-date))
-               time       (r/atom (current-time))]
+               datetime   (r/atom (current-datetime))]
     [mui/table-row
      [mui/table-cell
       [mui/text-field {:type        "string"
@@ -53,23 +41,23 @@
                        :label       "Required"
                        :InputProps  {:end-adornment
                                      (r/as-element
-                                      [mui/input-adornment {:position "end"}
-                                       "₴"])}}]]
+                                      [mui/input-adornment "₴"])}}]]
      [mui/table-cell
-      [mui/text-field {:type      "date"
+      [mui/text-field {:type      "datetime-local"
                        :required  true
-                       :value     @date
-                       :on-change #(reset! date (.. % -target -value))}]
-      [mui/text-field {:type      "time"
-                       :value     @time
-                       :on-change #(reset! time (.. % -target -value))}]]
+                       :value     @datetime
+                       :on-change #(reset! datetime (.. % -target -value))
+                       :InputProps {:end-adornment
+                                    (r/as-element
+                                     [mui/input-adornment "UTC"])}}]]
+
      [mui/table-cell
       [mui/button {:variant "outlined"
                    :type    "submit"
                    :on-click #(rf/dispatch [::events/add-transaction
                                             {:payable-to @payable-to
                                              :amount     @amount
-                                             :date       (js/Date.parse (str @date " " @time))}])}
+                                             :date       (.valueOf (js/Date. @datetime))}])}
        "Submit"]]]))
 
 (defn table-body

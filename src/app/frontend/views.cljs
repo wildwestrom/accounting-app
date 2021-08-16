@@ -45,6 +45,7 @@
      [mui/table-cell
       [mui/text-field {:type      "datetime-local"
                        :required  true
+                       :label       "Required"
                        :value     @datetime
                        :on-change #(reset! datetime (.. % -target -value))}]]
 

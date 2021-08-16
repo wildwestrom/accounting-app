@@ -15,12 +15,12 @@
                                         (js/Date. (.getFullYear date)
                                                   (.getMonth date)
                                                   1)))
-                  end-of-month (.valueOf
-                                (let [date (js/Date.)]
-                                  (js/Date. (.getFullYear date)
-                                            (+ 1 (.getMonth date))
-                                            0)))]
-              (apply + (map #(int (:amount %))
+                  end-of-month       (.valueOf
+                                      (let [date (js/Date.)]
+                                        (js/Date. (.getFullYear date)
+                                                  (+ 1 (.getMonth date))
+                                                  0)))]
+              (apply + (map :amount
                             (filter #(<= beginning-of-month
                                          (:date %)
                                          end-of-month)

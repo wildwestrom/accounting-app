@@ -6,7 +6,6 @@
              :refer [subscribe dispatch-sync dispatch]]
             [day8.re-frame.test :as rf-test]
             [cljs.test :refer-macros [deftest testing is]]))
-;; (dispatch [::sut/add-transaction ["some" "other" "data"]])
 
 (deftest handlers
   (let [table (subscribe [::subs/table])

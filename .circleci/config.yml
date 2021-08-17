@@ -36,6 +36,8 @@ jobs:
 
       # test
       - run: yarn test
+      # release
+      - run: yarn release
 
       - save_cache:
           paths:
@@ -50,13 +52,14 @@ jobs:
 
       - store_artifacts:
           path: ~/repo/public
+
   deploy:
-    executor: heroku/default
-    working_directory: ~/repo
+    docker:
+      - image: cimg/base:2021.04
+    working_directory: ~/repo/public
     steps:
-      - checkout
-      - heroku/install
-      - heroku/deploy-via-git
+      - attach_workspace:
+          at: ~/repo/public
 
 
 workflows:

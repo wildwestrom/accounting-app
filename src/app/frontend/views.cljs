@@ -4,20 +4,19 @@
             [reagent.core :as r]
             [app.frontend.subs :as subs]
             [app.frontend.events :as events]
-            [goog.string :as gstring]
             [clojure.string :as string]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Components
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn leading-zero
-  [num]
-  (gstring/format "%02d" num))
-
 (defn current-datetime
   []
-  (string/join ":" (drop-last (string/split (.toISOString (js/Date.)) ":"))))
+  (as-> (js/Date.) d
+    (.toISOString d)
+    (string/split d ":")
+    (drop-last d)
+    (string/join ":" d)))
 
 (defn input-fields []
   (r/with-let [payable-to (r/atom "Company Name")
@@ -30,7 +29,8 @@
                        :placeholder "Payable to..."
                        :value       @payable-to
                        :on-change   #(reset! payable-to (.. % -target -value))
-                       :label       "Required"}]]
+                       :label       "Required"}]
+      ]
      [mui/table-cell
       [mui/text-field {:type        "number"
                        :required    true
@@ -41,7 +41,8 @@
                        :label       "Required"
                        :InputProps  {:end-adornment
                                      (r/as-element
-                                      [mui/input-adornment "₴"])}}]]
+                                      [mui/input-adornment {:position "end"} "₴"])}}]
+      ]
      [mui/table-cell
       [mui/grid {:container true
                  :justifyContent "space-between"
@@ -58,7 +59,10 @@
                      [::events/add-transaction
                       {:payable-to @payable-to
                        :amount     @amount
-                       :date       (.valueOf (js/Date. @datetime))}])} "Submit"]]]]))
+                       :date       (.valueOf (js/Date. @datetime))}])} "Submit"]
+       ]]
+     ])
+  )
 
 (defn table-body
   []
@@ -101,4 +105,5 @@
       [mui/box
        [:span "Current spending for this month: "]
        [:span @(rf/subscribe [::subs/current-month-total]) "₴"]]]
-     [table]]]])
+     [table]
+     ]]])

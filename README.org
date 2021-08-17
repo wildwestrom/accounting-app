@@ -1,7 +1,10 @@
 * Accounting App
+  [[https://img.shields.io/circleci/build/gh/wildwestrom/accounting-app/main.svg]]
+
+  The site is up and running on Netlify.\\
+  https://accounting-app-8976546487.netlify.app/
 
 ** Develop
-
 Before running for the first time run:
 #+begin_src shell
 yarn deps
@@ -20,16 +23,7 @@ yarn watch
     - host: =localhost=
     - port: =3333=
     - repl-type: =shadow=
-    - build: =node-repl=
-
-** Release
-This command will install dependencies as well as run the entire project. This means you can use it when running for the first time.
-
-#+begin_src shell
-yarn release
-#+end_src
-
-See [[https://shadow-cljs.github.io/docs/UsersGuide.html#release][Generating Production Code]] for more information.
+    - build: =:app= or =:test=
 
 ** License
 Accounting App: Demo Project\\

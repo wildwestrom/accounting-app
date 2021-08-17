@@ -23,11 +23,11 @@ commands:
 
       # install dependencies
       - run:
-          - name: Build
-          - command: |
-              yarn deps
-              yarn upgrade
-              yarn release
+          name: Build
+          command: |
+            yarn deps
+            yarn upgrade
+            yarn release
 
       - save_cache:
           paths:

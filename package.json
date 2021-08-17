@@ -2,8 +2,7 @@
     "private": true,
     "scripts": {
         "deps": "yarn install",
-        "build": "shadow-cljs release app",
-        "release": "yarn deps && yarn build",
+        "release": "shadow-cljs release app",
         "test": "shadow-cljs compile test --config-merge \"{:autorun false}\" && node test-out/node-tests.js",
         "watch:test": "shadow-cljs watch test",
         "watch": "shadow-cljs watch app"

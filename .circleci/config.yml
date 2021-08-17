@@ -53,7 +53,9 @@ jobs:
           key: v1-dependencies-node-{{ checksum "yarn.lock" }}
 
       - persist_to_workspace:
-         root: ~/repo/public
+         root: ~/
+         paths:
+          - repo/public
 
   deploy:
     docker:

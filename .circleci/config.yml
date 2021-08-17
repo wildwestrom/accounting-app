@@ -34,8 +34,8 @@ jobs:
             - v1-dependencies-node-{{ checksum "yarn.lock" }}
             - v1-dependencies-node-
 
-      # build
-      - run: yarn release
+      # test
+      - run: yarn test
 
       - save_cache:
           paths:

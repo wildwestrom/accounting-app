@@ -4,9 +4,6 @@
 #
 version: 2.1
 
-orbs:
-  heroku: circleci/heroku@1.2.6
-
 jobs:
   test:
     docker:
@@ -55,17 +52,19 @@ jobs:
       - persist_to_workspace:
          root: ~/
          paths:
-          - repo/public
+          - repo/
 
   deploy:
-    docker:
-      - image: cimg/base:2021.04
+    executor: node-executor
     working_directory: ~/
-    # remember to cd into `~/repo/public`
+    # remember to cd into `~/repo/`
 
     steps:
       - attach_workspace:
           at: ~/
+      - run: |
+          pwd
+          ls -la
 
 
 workflows:

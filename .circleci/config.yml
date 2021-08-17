@@ -60,10 +60,12 @@ jobs:
   deploy:
     docker:
       - image: cimg/base:2021.04
-    working_directory: ~/repo/public
+    working_directory: ~/
+    # remember to cd into `~/repo/public`
+
     steps:
       - attach_workspace:
-          at: ~/repo/public
+          at: ~/
 
 
 workflows:

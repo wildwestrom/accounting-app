@@ -16,7 +16,20 @@ commands:
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-clj-
       - restore_cache:
-          name: Restorencies-clj-{{ checksum "deps.edn" }}
+          name: Restore node dependency cache
+          keys:
+            - v1-dependencies-node-{{ checksum "yarn.lock" }}
+            - v1-dependencies-node-
+
+      # install dependencies
+      - run: yarn deps
+      # test
+      - run: yarn release
+
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-clj-{{ checksum "deps.edn" }}
 
       - save_cache:
           paths:

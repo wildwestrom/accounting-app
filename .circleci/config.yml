@@ -22,9 +22,12 @@ commands:
             - v1-dependencies-node-
 
       # install dependencies
-      - run: yarn deps
-      # test
-      - run: yarn release
+      - run:
+          - name: Build
+          - command: |
+              yarn deps
+              yarn upgrade
+              yarn release
 
       - save_cache:
           paths:

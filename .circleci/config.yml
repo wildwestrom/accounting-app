@@ -54,7 +54,8 @@ jobs:
          paths:
           - repo/
   deploy:
-    docker: circleci/node:latest
+    docker:
+      - image: circleci/node:latest
     working_directory: ~/
     # remember to cd into `~/repo/`
 

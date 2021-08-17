@@ -86,11 +86,6 @@ jobs:
     steps:
       - build-site
       - run:
-          name: just testing some stuff
-          command: |
-            pwd
-            ls -la
-      - run:
           name: Netlify Deploy
           command: ./node_modules/.bin/netlify deploy --site $NETLIFY_SITE_ID --auth $NETLIFY_ACCESS_TOKEN --dir=public
   deploy:
@@ -98,11 +93,6 @@ jobs:
       - image: circleci/clojure:tools-deps-node
     steps:
       - build-site
-      - run:
-          name: just testing some stuff
-          command: |
-            pwd
-            ls -la
       - run:
           name: Netlify Deploy
           command: ./node_modules/.bin/netlify deploy --site $NETLIFY_SITE_ID --auth $NETLIFY_ACCESS_TOKEN --prod --dir=public

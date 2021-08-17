@@ -53,7 +53,6 @@ jobs:
          root: ~/
          paths:
           - repo/
-
   deploy:
     executor: node-executor
     working_directory: ~/
@@ -62,10 +61,11 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
-      - run: |
-          pwd
-          ls -la
-
+      - run:
+          name: just testing some stuff
+          command: |
+            pwd
+            ls -la
 
 workflows:
   test-deploy:

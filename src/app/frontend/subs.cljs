@@ -19,7 +19,10 @@
                                       (let [date (js/Date.)]
                                         (js/Date. (.getFullYear date)
                                                   (+ 1 (.getMonth date))
-                                                  0)))]
+                                                  1
+                                                  0
+                                                  0
+                                                  -1)))]
               (apply + (map :amount
                             (filter #(<= beginning-of-month
                                          (:date %)

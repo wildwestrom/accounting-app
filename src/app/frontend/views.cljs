@@ -1,27 +1,23 @@
 (ns app.frontend.views
   (:require [re-frame.core :as rf]
             [reagent-material-ui.components :as mui]
+            [reagent-material-ui.cljs-time-utils :refer [cljs-time-utils]]
+            [reagent-material-ui.pickers.mui-pickers-utils-provider :refer [mui-pickers-utils-provider]]
+            [reagent-material-ui.pickers.date-time-picker :refer [date-time-picker]]
             [reagent.core :as r]
             [app.frontend.subs :as subs]
             [app.frontend.events :as events]
-            [clojure.string :as string]))
+            [clojure.string :as string])
+  (:import (goog.i18n DateTimeSymbols)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Components
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn current-datetime
-  []
-  (as-> (js/Date.) d
-    (.toISOString d)
-    (string/split d ":")
-    (drop-last d)
-    (string/join ":" d)))
-
 (defn input-fields []
   (r/with-let [payable-to (r/atom "Company Name")
                amount     (r/atom "0")
-               datetime   (r/atom (current-datetime))]
+               datetime   (r/atom (js/Date.))]
     [mui/table-row
      [mui/table-cell
       [mui/text-field {:type        "string"
@@ -29,8 +25,7 @@
                        :placeholder "Payable to..."
                        :value       @payable-to
                        :on-change   #(reset! payable-to (.. % -target -value))
-                       :label       "Required"}]
-      ]
+                       :label       "Required"}]]
      [mui/table-cell
       [mui/text-field {:type        "number"
                        :required    true
@@ -41,28 +36,24 @@
                        :label       "Required"
                        :InputProps  {:end-adornment
                                      (r/as-element
-                                      [mui/input-adornment {:position "end"} "₴"])}}]
-      ]
+                                      [mui/input-adornment {:position "end"} "₴"])}}]]
      [mui/table-cell
-      [mui/grid {:container true
-                 :justifyContent "space-between"
-                 :style #js {:gridTemplateColumns "repeat (2, 1fr)"}}
-       [mui/text-field {:type      "datetime-local"
-                        :required  true
-                        :label       "Required"
-                        :value     @datetime
-                        :on-change #(reset! datetime (.. % -target -value))}]
-       [mui/button
-        {:variant "outlined"
-         :type    "submit"
-         :on-click #(rf/dispatch
-                     [::events/add-transaction
-                      {:payable-to @payable-to
-                       :amount     @amount
-                       :date       (.valueOf (js/Date. @datetime))}])} "Submit"]
-       ]]
-     ])
-  )
+      [mui-pickers-utils-provider {:utils  cljs-time-utils
+                                   :locale DateTimeSymbols}
+       [mui/grid {:container true
+                  :justifyContent "space-between"
+                  :style #js {:gridTemplateColumns "repeat (2, 1fr)"}}
+        [date-time-picker {:value @datetime
+                           :variant "inline"
+                           :onChange #(reset! datetime (.. % -date))}]
+        [mui/button
+         {:variant "outlined"
+          :type    "submit"
+          :on-click #(rf/dispatch
+                      [::events/add-transaction
+                       {:payable-to @payable-to
+                        :amount     @amount
+                        :date       (.valueOf (js/Date. @datetime))}])} "Submit"]]]]]))
 
 (defn table-body
   []
@@ -78,14 +69,13 @@
                        :justifyContent "space-between"}
              [:span amount]
              [:span "₴"]]]
-           [mui/table-cell (.toLocaleString (js/Date. date))]])])]))
+           [mui/table-cell (.toLocaleString (js/Date. date))]])])
+     [input-fields]]))
 
 (defn table
   []
   [mui/table-container
    [mui/table
-    [mui/table-head
-     [input-fields]]
     [mui/table-head
      [mui/table-row
       [mui/table-cell "Payable to:"]
@@ -105,5 +95,4 @@
       [mui/box
        [:span "Current spending for this month: "]
        [:span @(rf/subscribe [::subs/current-month-total]) "₴"]]]
-     [table]
-     ]]])
+     [table]]]])

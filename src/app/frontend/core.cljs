@@ -4,14 +4,10 @@
             [app.frontend.events :as events]
             [app.frontend.views :as views]))
 
-(defn mount-root
-  [component]
-  (r.dom/render component (.getElementById js/document "app")))
-
-(defn ^:dev/after-load start
+(defn ^{:after-load true, :dev/after-load true} start
   []
   (.log js/console "start")
-  (mount-root [views/app]))
+  (r.dom/render [views/app] (js/document.getElementById "app")))
 
 (defn ^:export init
   []

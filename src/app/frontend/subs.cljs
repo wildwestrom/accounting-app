@@ -1,15 +1,14 @@
 (ns app.frontend.subs
-  (:require [re-frame.core :as re-frame :refer [reg-sub]]
-            [day8.re-frame.tracing :refer-macros [fn-traced]]))
+  (:require [re-frame.core :as re-frame :refer [reg-sub]]))
 
 (reg-sub
  ::table
- (fn-traced [db _]
+ (fn [db _]
             (sort-by :date (:all-data db))))
 
 (reg-sub
  ::current-month-total
- (fn-traced [db _]
+ (fn [db _]
             (let [beginning-of-month (.valueOf
                                       (let [date (js/Date.)]
                                         (js/Date. (.getFullYear date)

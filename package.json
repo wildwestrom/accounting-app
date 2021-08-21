@@ -1,5 +1,4 @@
 {
-    "private": true,
     "scripts": {
         "deps": "yarn install",
         "release": "shadow-cljs release app",
@@ -7,22 +6,16 @@
         "watch:test": "shadow-cljs watch test",
         "watch": "shadow-cljs watch app"
     },
-    "devDependencies": {
-        "netlify-cli": "^6.5.8",
-        "npm-run-all": "^4.1.5",
-        "shadow-cljs": "2.15.3"
-    },
     "dependencies": {
-        "@material-ui/core": "^4.12.3",
-        "@material-ui/data-grid": "^4.0.0-alpha.35",
-        "@material-ui/icons": "^4.11.2",
-        "@material-ui/lab": "^4.0.0-alpha.60",
-        "@material-ui/pickers": "^3.3.10",
-        "@material-ui/styles": "^4.11.4",
-        "@material-ui/system": "^4.12.1",
-        "@material-ui/utils": "^4.11.2",
-        "highlight.js": "11.1.0",
-        "react": "^17.0.1",
-        "react-dom": "^17.0.1"
+        "@emotion/react": "^11.4.0",
+        "@emotion/styled": "^11.3.0",
+        "@material-ui/core": "5.0.0-beta.2",
+        "@material-ui/lab": "5.0.0-alpha.41",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2"
+    },
+    "devDependencies": {
+        "netlify-cli": "^6.7.1",
+        "shadow-cljs": "^2.15.5"
     }
 }

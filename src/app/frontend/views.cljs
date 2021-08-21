@@ -106,11 +106,12 @@
      [date-time-picker
       {:value        @datetime
        :ampm         false
-       ;; :mask         "____-__-__ __:__ z"
-       :disableMaskedInput true
-       :input-format "yyyy-mm-dd HH:mm z"
+       :mask         "____-__-__ __:__"
+       :input-format "yyyy-mm-dd HH:mm"
        :variant      "inline"
-       :onChange     #(reset! datetime (.. % -date))
+       :defaultValue "2017-05-24T10:30"
+       :onChange     #(reset! datetime (when (.. % -date)
+                                         (.. % -date)))
        :render-input (react-component [props]
                                       [text-field props])}]]]])
 

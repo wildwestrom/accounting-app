@@ -24,12 +24,13 @@
             [reagent-material-ui.cljs-time-adapter :refer [cljs-time-adapter]]
             [reagent-material-ui.lab.localization-provider :refer [localization-provider]]
             [reagent-material-ui.lab.date-time-picker :refer [date-time-picker]]
+            [reagent-material-ui.lab.time-picker :refer [time-picker]]
+            [reagent-material-ui.lab.date-picker :refer [date-picker]]
             [reagent-material-ui.icons.clear :refer [clear]]
             ;; ["@material-ui/data-grid" :as data-grid]
             [app.frontend.events :as events]
             [app.frontend.subs :as subs]
-            [i18n.datetime :as i18n.dt]
-            taoensso.timbre)
+            [i18n.datetime :as i18n.dt])
   (:import (goog.i18n DateTimeSymbols)))
 
 (defn event-value
@@ -42,7 +43,7 @@
 
 (def custom-theme
   {:palette {:primary colors/blue
-             :secondary colors/purple}})
+             :secondary colors/red}})
 
 (def classes (let [prefix "rmui-example"]
                {:root       (str prefix "-root")
@@ -57,6 +58,15 @@
      (str "& ." (:text-field classes)) {:width        200
                                         :margin-left  (spacing 1)
                                         :margin-right (spacing 1)}}))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; State
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(def payable-to (r/atom "Company Name"))
+(def amount     (r/atom "0"))
+(def datetime   (r/atom (js/Date.)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Components
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -73,53 +83,37 @@
      (str @(rf/subscribe [::subs/current-month-total]) "₴")]]])
 
 (defn input-fields []
-  (r/with-let [payable-to (r/atom "Company Name")
-               amount     (r/atom "0")
-               datetime   (r/atom (js/Date.))]
-    [:<>
-     [table-row
-      [table-cell
-       [text-field {:type        "string"
-                    :required    true
-                    :placeholder "Payable to..."
-                    :value       @payable-to
-                    :on-change   #(reset! payable-to (event-value %))
-                    :label       "Required"}]]
-      [table-cell
-       [text-field {:type        "number"
-                    :required    true
-                    :step        1
-                    :placeholder "Amount..."
-                    :value       @amount
-                    :on-change   #(reset! amount (int (event-value %)))
-                    :label       "Required"
-                    :input-props  {:end-adornment
-                                  (r/as-element
-                                   [input-adornment {:position "end"} "₴"])}}]]
-      [table-cell
-       [grid {:container      true
-              :justifyContent "space-between"
-              :style          #js {:gridTemplateColumns "repeat (2, 1fr)"}}
-        [date-time-picker {:value    @datetime
-                           :variant  "inline"
-                           :label    "Required"
-                           :on-change #(reset! datetime (.. % -date))}]]]
-      ]
-     [table-row
-      [table-cell]
-      [table-cell]
-      [table-cell
-        [button
-          {:variant  "outlined"
-           :type     "submit"
-           :on-click #(rf/dispatch
-                       [::events/add-transaction
-                        {:payable-to @payable-to
-                         :amount     @amount
-                         :date       (.valueOf (js/Date. @datetime))}])}
-          "Submit"
-          [clear]]
-       ]]]))
+  [:<>
+   [table-row
+    [table-cell
+     [text-field {:type        "string"
+                  :required    true
+                  :placeholder "Payable to..."
+                  :value       @payable-to
+                  :on-change   #(reset! payable-to (event-value %))
+                  :label       "Required"}]]
+    [table-cell
+     [text-field {:type        "number"
+                  :label       "Required"
+                  :required    true
+                  :step        1
+                  :placeholder "Amount..."
+                  :value       @amount
+                  :on-change   #(reset! amount (int (event-value %)))
+                  :InputProps  {:end-adornment
+                                (r/as-element
+                                 [input-adornment {:position "end"} "₴"])}}]]
+    [table-cell
+     ;; [date-time-picker]
+     [button
+                 {:variant  "outlined"
+                  :type     "submit"
+                  :on-click #(rf/dispatch
+                              [::events/add-transaction
+                               {:payable-to @payable-to
+                                :amount     @amount
+                                :date       (.valueOf (js/Date. @datetime))}])}
+                 "Submit"]]]])
 
 (defn table-data
   []
@@ -152,7 +146,7 @@
     [table-data]]])
 
 (defn page*
-  []
+  [{:keys [classes] :as props}]
   [:<>
    [app-bar {:position "static"}
     [typography {:variant "h3"

@@ -1,31 +1,25 @@
-{:deps true
-
- :nrepl
- {:port  3333
-  :nrepl {:middleware [refactor-nrepl.middleware/wrap-refactor]}}
- :builds {:app  {:target     :browser
-                 :output-dir "public/js/compiled"
-                 :asset-path "/js/compiled"
-                 :modules    {:main {:init-fn app.frontend.core/init}}
-                 :devtools   {:before-load app.frontend.core/stop
-                              :after-load  app.frontend.core/start
-                              :http-root   "public"
-                              :http-port   3000
-                              :preloads    [devtools.preload
-                                           day8.re-frame-10x.preload]}
-                 :dev        {:compiler-options
-                              {:output-feature-set :es-next
-                               :infer-externs      :auto
-                               :optimizations      :none
-                               :closure-defines
-                               {re-frame.trace.trace-enabled?        true
-                                day8.re-frame.tracing.trace-enabled? true}}}
-                 :release    {:build-options
-                              {:ns-aliases
-                               {day8.re-frame.tracing day8.re-frame.tracing-stubs}}}
-                 :js-options {:anon-fn-naming-policy :unmapped}}
-          :test {:target    :node-test
-                 :test-dir  "test-out/"
-                 :output-to "test-out/node-tests.js"
-                 :ns-regexp "-test$"
-                 :autorun   true}}}
+{:dependencies [[re-frame/re-frame             "1.2.0"]
+                [day8.re-frame/test            "0.1.5"]
+                [reagent/reagent               "1.1.0"]
+                [arttuka/reagent-material-ui   "5.0.0-beta.2-0"]
+                [refactor-nrepl/refactor-nrepl "3.0.0-pr301"]
+                [cider/cider-nrepl             "0.26.0"]
+                [thedavidmeister/cljs-i18n     "0.5.0-SNAPSHOT"]
+                [com.taoensso/timbre           "5.1.2"]]
+ :source-paths ["src" "test"]
+ :nrepl        {:port  3333
+                :nrepl {:middleware [refactor-nrepl.middleware/wrap-refactor]}}
+ :builds       {:app {:target          :browser
+                      :output-dir       "public/js/compiled"
+                      :asset-path       "/js/compiled"
+                      :modules          {:main {:init-fn app.frontend.core/init}}
+                      :compiler-options {:infer-externs      :auto
+                                         :output-feature-set :es5}
+                      :js-options       {:anon-fn-naming-policy :unmapped}
+                      :devtools         {:http-root "public"
+                                         :http-port 3000}}
+                :test {:target    :node-test
+                       :test-dir  "test-out/"
+                       :output-to "test-out/node-tests.js"
+                       :ns-regexp "-test$"
+                       :autorun   true}}}

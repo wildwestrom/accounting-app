@@ -1106,7 +1106,7 @@
     react-is "^17.0.0"
     react-transition-group "^4.4.0"
 
-"@material-ui/lab@^5.0.0-alpha.43":
+"@material-ui/lab@^5.0.0-alpha.41":
   version "5.0.0-alpha.43"
   resolved "https://registry.yarnpkg.com/@material-ui/lab/-/lab-5.0.0-alpha.43.tgz#a10ca7999f1b67e328fad4b92594345aade72497"
   integrity sha512-YbV/ozE8Y2PDf8h+nRGvd3Y7dycDyofIVzr+jcq0NWUHllaearBMYuom3uCnog/2hZeppLQsy93+E/d3Vufu9A==

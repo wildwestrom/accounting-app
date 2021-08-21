@@ -25,13 +25,9 @@
             [reagent-material-ui.cljs-time-adapter :refer [cljs-time-adapter]]
             [reagent-material-ui.lab.localization-provider :refer [localization-provider]]
             [reagent-material-ui.lab.date-time-picker :refer [date-time-picker]]
-            [reagent-material-ui.lab.time-picker :refer [time-picker]]
-            [reagent-material-ui.lab.date-picker :refer [date-picker]]
             [reagent-material-ui.icons.add-box :refer [add-box]]
-            ;; ["@material-ui/data-grid" :as data-grid]
             [app.frontend.events :as events]
-            [app.frontend.subs :as subs]
-            [i18n.datetime :as i18n.dt])
+            [app.frontend.subs :as subs])
   (:import (goog.i18n DateTimeSymbols)))
 
 (defn event-value
@@ -144,9 +140,7 @@
                     :justifyContent "space-between"}
               [:span amount]
               [:span "₴"]]]
-            [table-cell (i18n.dt/format (js/Date. date)
-                                        :pattern :short-datetime
-                                        :tz 0)]])])])
+            [table-cell (.toUTCString (js/Date. date))]])])])
    [table-footer
     [input-fields]]])
 

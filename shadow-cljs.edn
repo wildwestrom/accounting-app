@@ -3,9 +3,7 @@
                 [reagent/reagent               "1.1.0"]
                 [arttuka/reagent-material-ui   "5.0.0-beta.2-0"]
                 [refactor-nrepl/refactor-nrepl "3.0.0-pr301"]
-                [cider/cider-nrepl             "0.26.0"]
-                [thedavidmeister/cljs-i18n     "0.5.0-SNAPSHOT"]
-                [com.taoensso/timbre           "5.1.2"]]
+                [cider/cider-nrepl             "0.26.0"]]
  :source-paths ["src" "test"]
  :nrepl        {:port  3333
                 :nrepl {:middleware [refactor-nrepl.middleware/wrap-refactor]}}

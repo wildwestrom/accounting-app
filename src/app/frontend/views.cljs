@@ -16,6 +16,7 @@
             [reagent-material-ui.core.table :refer [table]]
             [reagent-material-ui.core.table-head :refer [table-head]]
             [reagent-material-ui.core.table-body :refer [table-body]]
+            [reagent-material-ui.core.table-footer :refer [table-footer]]
             [reagent-material-ui.core.table-row :refer [table-row]]
             [reagent-material-ui.core.table-cell :refer [table-cell]]
             [reagent-material-ui.core.table-container :refer [table-container]]
@@ -26,7 +27,7 @@
             [reagent-material-ui.lab.date-time-picker :refer [date-time-picker]]
             [reagent-material-ui.lab.time-picker :refer [time-picker]]
             [reagent-material-ui.lab.date-picker :refer [date-picker]]
-            [reagent-material-ui.icons.clear :refer [clear]]
+            [reagent-material-ui.icons.add-box :refer [add-box]]
             ;; ["@material-ui/data-grid" :as data-grid]
             [app.frontend.events :as events]
             [app.frontend.subs :as subs]
@@ -82,7 +83,8 @@
                  :component "h4"}
      (str @(rf/subscribe [::subs/current-month-total]) "₴")]]])
 
-(defn input-fields []
+(defn input-fields
+  [{:keys [classes] :as props}]
   [:<>
    [table-row
     [table-cell
@@ -104,35 +106,49 @@
                                 (r/as-element
                                  [input-adornment {:position "end"} "₴"])}}]]
     [table-cell
-     ;; [date-time-picker]
+     [date-time-picker
+      {:value        @datetime
+       :variant      "inline"
+       :onChange     #(reset! datetime (.. % -date))
+       :render-input (react-component [props]
+                                      [text-field props])}]]]])
+
+(defn submit-button
+  []
+  [table-footer
+   [table-row
+    [table-cell
      [button
-                 {:variant  "outlined"
-                  :type     "submit"
-                  :on-click #(rf/dispatch
-                              [::events/add-transaction
-                               {:payable-to @payable-to
-                                :amount     @amount
-                                :date       (.valueOf (js/Date. @datetime))}])}
-                 "Submit"]]]])
+      {:variant  "outlined"
+       :type     "submit"
+       :on-click #(rf/dispatch
+                   [::events/add-transaction
+                    {:payable-to @payable-to
+                     :amount     @amount
+                     :date       (.valueOf (js/Date. @datetime))}])}
+      "Submit"
+      [add-box]]]]])
 
 (defn table-data
   []
-  (let [table (rf/subscribe [::subs/table])]
-    [table-body
-     (for [row @table]
-       [table-row {:key (random-uuid)}
-        (let [{:keys [payable-to amount date]} row]
-          [:<>
-           [table-cell payable-to]
-           [table-cell
-            [grid {:container      true
-                   :justifyContent "space-between"}
-             [:span amount]
-             [:span "₴"]]]
-           [table-cell (i18n.dt/format (js/Date. date)
-                                       :pattern :short-datetime
-                                       :tz 0)]])])
-     [input-fields]]))
+  [:<>
+   (let [table (rf/subscribe [::subs/table])]
+     [table-body
+      (for [row @table]
+        [table-row {:key (random-uuid)}
+         (let [{:keys [payable-to amount date]} row]
+           [:<>
+            [table-cell payable-to]
+            [table-cell
+             [grid {:container      true
+                    :justifyContent "space-between"}
+              [:span amount]
+              [:span "₴"]]]
+            [table-cell (i18n.dt/format (js/Date. date)
+                                        :pattern :short-datetime
+                                        :tz 0)]])])])
+   [table-footer
+    [input-fields]]])
 
 (defn main-table
   []
@@ -143,10 +159,11 @@
       [table-cell "Payable to:"]
       [table-cell "Amount:"]
       [table-cell "Date:"]]]
+    [submit-button]
     [table-data]]])
 
 (defn page*
-  [{:keys [classes] :as props}]
+  []
   [:<>
    [app-bar {:position "static"}
     [typography {:variant "h3"

@@ -26,6 +26,7 @@
             [reagent-material-ui.lab.localization-provider :refer [localization-provider]]
             [reagent-material-ui.lab.date-time-picker :refer [date-time-picker]]
             [reagent-material-ui.icons.add-box :refer [add-box]]
+            [tick.core :as t]
             [app.frontend.events :as events]
             [app.frontend.subs :as subs])
   (:import (goog.i18n DateTimeSymbols)))
@@ -104,6 +105,10 @@
     [table-cell
      [date-time-picker
       {:value        @datetime
+       :ampm         false
+       ;; :mask         "____-__-__ __:__ z"
+       :disableMaskedInput true
+       :input-format "yyyy-mm-dd HH:mm z"
        :variant      "inline"
        :onChange     #(reset! datetime (.. % -date))
        :render-input (react-component [props]
@@ -121,7 +126,7 @@
                    [::events/add-transaction
                     {:payable-to @payable-to
                      :amount     @amount
-                     :date       (.valueOf (js/Date. @datetime))}])}
+                     :date       (t/instant (js/Date. @datetime))}])}
       "Submit"
       [add-box]]]]])
 
@@ -140,7 +145,7 @@
                     :justifyContent "space-between"}
               [:span amount]
               [:span "₴"]]]
-            [table-cell (.toUTCString (js/Date. date))]])])])
+            [table-cell (t/format (t/in date (t/zone "Z")))]])])])
    [table-footer
     [input-fields]]])
 

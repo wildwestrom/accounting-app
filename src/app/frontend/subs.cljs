@@ -1,29 +1,27 @@
 (ns app.frontend.subs
-  (:require [re-frame.core :as re-frame :refer [reg-sub]]))
+  (:require [re-frame.core :as re-frame :refer [reg-sub]]
+            [tick.core :as t]))
 
 (reg-sub
  ::table
  (fn [db _]
-            (sort-by :date (:all-data db))))
+   (sort-by :date (:all-data db))))
 
 (reg-sub
  ::current-month-total
  (fn [db _]
-            (let [beginning-of-month (.valueOf
-                                      (let [date (js/Date.)]
-                                        (js/Date. (.getFullYear date)
-                                                  (.getMonth date)
-                                                  1)))
-                  end-of-month       (.valueOf
-                                      (let [date (js/Date.)]
-                                        (js/Date. (.getFullYear date)
-                                                  (+ 1 (.getMonth date))
-                                                  1
-                                                  0
-                                                  0
-                                                  -1)))]
-              (apply + (map :amount
-                            (filter #(<= beginning-of-month
-                                         (:date %)
-                                         end-of-month)
-                                    (:all-data db)))))))
+   (let [now                (t/instant)
+         current-month      (t/int (t/month now))
+         current-year       (t/int (t/year now))
+         beginning-of-month (-> (t/new-date current-year current-month 1)
+                                (t/at (t/midnight))
+                                (t/in (t/zone "Z"))
+                                (t/instant))
+         end-of-month       (-> (t/new-date current-year (+ 1 current-month) 1)
+                                (t/at (t/midnight))
+                                (t/in (t/zone "Z"))
+                                (t/<< (t/new-duration 1 :seconds))
+                                (t/instant))]
+     (apply + (map :amount
+                   (filter #(t/<= beginning-of-month (:date %) end-of-month)
+                           (:all-data db)))))))
